@@ -17,6 +17,10 @@ db.notice = require("../app/modules/notice/notice.model")(
   db.sequelize,
   DataTypes,
 );
+db.quickLink = require("../app/modules/quickLink/quickLink.model")(
+  db.sequelize,
+  DataTypes,
+);
 db.academic = require("../app/modules/academic/academic.model")(
   db.sequelize,
   DataTypes,
