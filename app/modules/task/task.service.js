@@ -105,17 +105,9 @@ const getAllFromDB = async (filters, options) => {
       throw new ApiError(400, "Invalid status filter");
     }
 
-    // ✅ Branch logic (FINAL)
+    // branch filter: superAdmin sends "" (no filter), others send their branch
     if (key === "branch") {
-      // 🔹 Edu Anchor → see ALL branches (no branch condition)
-      if (value === "Edu Anchor") {
-        return;
-      }
-
-      // 🔹 Other branches → ONLY own branch
-      andConditions.push({
-        branch: { [Op.eq]: value },
-      });
+      andConditions.push({ branch: { [Op.eq]: value } });
       return;
     }
 
@@ -206,13 +198,9 @@ const getAllFromDB = async (filters, options) => {
 const getOverviewCountsFromDB = async (filters = {}) => {
   const where = {};
 
-  // ✅ FINAL Branch logic
+  // branch filter: superAdmin sends "" (no filter), others send their branch
   if (filters.branch) {
-    // 🔹 Edu Anchor → ALL branches (no filter)
-    if (filters.branch !== "Edu Anchor") {
-      // 🔹 Other branches → ONLY own branch
-      where.branch = filters.branch;
-    }
+    where.branch = filters.branch;
   }
 
   // ✅ Other filters stay same

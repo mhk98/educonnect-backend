@@ -220,6 +220,19 @@ const updateUserPasswordFromDB = catchAsync(async (req, res) => {
   });
 });
 
+const impersonateUser = catchAsync(async (req, res) => {
+  const requesterId = req.user?.id;
+  const { id: targetId } = req.params;
+
+  const result = await UserService.impersonateUser(requesterId, targetId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Impersonation successful!",
+    data: result,
+  });
+});
+
 const UserController = {
   getAllFromDB,
   login,
@@ -230,6 +243,7 @@ const UserController = {
   updateUserPasswordFromDB,
   getAllActiveStudentFromDB,
   getOverview,
+  impersonateUser,
 };
 
 module.exports = UserController;

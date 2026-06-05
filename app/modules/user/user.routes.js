@@ -34,6 +34,9 @@ router.get("/", UserController.getAllFromDB);
 router.get("/overview", UserController.getOverview);
 router.get("/student", UserController.getAllActiveStudentFromDB);
 
+// 🔁 Impersonation (superAdmin only) — specific route before /:id
+router.post("/impersonate/:id", auth(), UserController.impersonateUser);
+
 // ⚠️ Dynamic routes সবশেষে
 router.get("/:id", UserController.getUserById);
 router.delete("/:id", UserController.deleteUserFromDB);

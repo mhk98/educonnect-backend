@@ -328,13 +328,8 @@ const getAllActiveStudentFromDB = async (filters) => {
 const getOverviewCountsFromDB = async (filters = {}) => {
   const where = {};
 
-  // ✅ FINAL Branch logic
   if (filters.Branch) {
-    // 🔹 Edu Anchor → ALL branches (no filter)
-    if (filters.Branch !== "Edu Anchor") {
-      // 🔹 Other branches → ONLY own branch
-      where.Branch = filters.Branch;
-    }
+    where.Branch = filters.Branch;
   }
 
   // ✅ Other filters stay same
@@ -433,6 +428,21 @@ const updateUserPasswordFromDB = async (id, payload) => {
   return result;
 };
 
+const impersonateUser = async (requesterId, targetId) => {
+  const requester = await User.findOne({ where: { id: requesterId } });
+  if (!requester || requester.Role !== "superAdmin") {
+    throw new ApiError(403, "Only superAdmin can impersonate users.");
+  }
+
+  const targetUser = await User.findOne({ where: { id: targetId } });
+  if (!targetUser) {
+    throw new ApiError(404, "Target user not found.");
+  }
+
+  const accessToken = generateToken(targetUser);
+  return { accessToken, user: targetUser };
+};
+
 const UserService = {
   getAllFromDB,
   login,
@@ -443,6 +453,7 @@ const UserService = {
   updateUserPasswordFromDB,
   getAllActiveStudentFromDB,
   getOverviewCountsFromDB,
+  impersonateUser,
 };
 
 module.exports = UserService;

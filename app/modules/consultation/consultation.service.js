@@ -175,9 +175,7 @@ const insertIntoDB = async (payload) => {
 const getAllFromDB = async (filters, options) => {
   const { page, limit, skip } = paginationHelpers.calculatePagination(options);
 
-  const { searchTerm, startDate, endDate, role, ...filterData } = filters;
-
-  // console.log("filtersUserId", filterData.user_id);
+  const { searchTerm, startDate, endDate, role, user_id, ...filterData } = filters;
 
   const andConditions = [];
 
@@ -234,10 +232,10 @@ const getAllFromDB = async (filters, options) => {
     });
   }
 
-  // 👨‍💼 Employee access control
-  if (role === "employee" && filterData.user_id) {
+  // 👨‍💼 Employee: শুধু নিজের assign করা lead দেখবে
+  if (role === "employee" && user_id) {
     andConditions.push({
-      [Op.or]: [{ user_id: null }, { user_id: filterData.user_id }],
+      [Op.or]: [{ user_id: null }, { user_id }],
     });
   }
 

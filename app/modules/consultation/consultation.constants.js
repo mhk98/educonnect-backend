@@ -12,6 +12,7 @@ const ConsultationFilterAbleFileds = [
   "ieltsScore",
   "destination",
   "user_id",
+  "role",
 ];
 const ConsultationSearchAbleFields = [
   "status",
