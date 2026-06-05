@@ -12,6 +12,14 @@ const Academic = db.academic;
 const Tests = db.tests;
 const Contract = db.contract;
 const bcrypt = require("bcryptjs");
+const sendEmail = require("../../../app/middlewares/emailSender");
+
+const generatePassword = () => {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  return Array.from({ length: 8 }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length))
+  ).join("");
+};
 
 // const insertIntoDB = async (payload) => {
 //   const { url, location, userId, sscYear, hscYear, bachelorYear } = payload;
@@ -403,10 +411,10 @@ const updateOneFromDB = async (id, payload) => {
       });
 
       let student = existingUser;
+      let rawPassword = null;
 
       if (!student) {
-        // 🔐 Generate password
-        const rawPassword = "12345"; // 👉 better: random generate করো
+        rawPassword = generatePassword();
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(rawPassword, salt);
 
@@ -428,7 +436,7 @@ const updateOneFromDB = async (id, payload) => {
         { where: { id }, transaction: t },
       );
 
-      // 5️⃣ Create related data (safe)
+      // 5️⃣ Create related data
       await Promise.all([
         Profile.create({ user_id: student.id }, { transaction: t }),
         Document.create({ user_id: student.id }, { transaction: t }),
@@ -436,9 +444,47 @@ const updateOneFromDB = async (id, payload) => {
         Tests.create({ user_id: student.id }, { transaction: t }),
         Contract.create({ user_id: student.id }, { transaction: t }),
       ]);
+
+      // 6️⃣ Send credentials email (only for newly created student with email)
+      if (rawPassword && lead.email) {
+        sendEmail({
+          to: lead.email,
+          subject: "Welcome to EduConnect — Your Account is Ready",
+          htmlContent: `
+            <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;background:#f9fafb;border-radius:12px;">
+              <div style="text-align:center;margin-bottom:28px;">
+                <h2 style="color:#1B2E6B;font-size:22px;margin:0;">Welcome to EduConnect!</h2>
+              </div>
+              <p style="color:#374151;font-size:15px;margin-bottom:8px;">Hi <strong>${lead.fullName}</strong>,</p>
+              <p style="color:#6b7280;font-size:14px;line-height:1.6;margin-bottom:24px;">
+                Your application has been approved and your student account is ready.
+                Use the credentials below to log in to the EduConnect portal.
+              </p>
+              <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:20px 24px;margin-bottom:24px;">
+                <table style="width:100%;font-size:14px;">
+                  <tr>
+                    <td style="color:#6b7280;padding:6px 0;width:40%;">Email / Username</td>
+                    <td style="color:#111827;font-weight:600;">${lead.email}</td>
+                  </tr>
+                  <tr>
+                    <td style="color:#6b7280;padding:6px 0;">Password</td>
+                    <td style="color:#1B2E6B;font-weight:700;font-size:20px;letter-spacing:3px;">${rawPassword}</td>
+                  </tr>
+                </table>
+              </div>
+              <p style="color:#ef4444;font-size:13px;margin-bottom:24px;">
+                ⚠️ Please change your password after first login.
+              </p>
+              <p style="color:#9ca3af;font-size:12px;text-align:center;margin:0;">
+                EduConnect &mdash; Study Abroad Consultancy
+              </p>
+            </div>
+          `,
+        }).catch((err) => console.error("Email send failed:", err));
+      }
     }
 
-    // 6️⃣ Notification
+    // 7️⃣ Notification
     await NotificationService.createNotification({
       message: `Update ${location} Branch student ${lead.fullName} lead info`,
       branch: lead.location,

@@ -40,6 +40,7 @@ const NotificationRoutes = require("../modules/notification/notification.routes"
 const NoticeRoutes = require("../modules/notice/notice.routes");
 const BranchRoutes = require("../modules/branch/branch.routes");
 const CountryRoutes = require("../modules/country/country.routes");
+const QuickLinkRoutes = require("../modules/quickLink/quickLink.routes");
 
 const router = express.Router();
 
@@ -56,6 +57,10 @@ const moduleRoutes = [
   {
     path: "/notice",
     route: NoticeRoutes,
+  },
+  {
+    path: "/quickLink",
+    route: QuickLinkRoutes,
   },
 
   {
