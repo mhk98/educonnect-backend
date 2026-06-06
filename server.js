@@ -171,9 +171,11 @@ const http = require("http");
 const db = require("./models"); // Sequelize instance
 const routes = require("./app/routes");
 const ApiError = require("./error/ApiError");
+const { initSocket } = require("./app/modules/realtime/socket");
 
 const app = express();
 const server = http.createServer(app);
+initSocket(server);
 
 const PORT = process.env.PORT || 5000;
 

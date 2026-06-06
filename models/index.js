@@ -355,6 +355,68 @@ db.taskActivity.belongsTo(db.user, {
 // ❌ Removed redundant duplicate `studentComment` - `studentReply` mapping
 // (already defined above)
 
+// ── Chat models ──
+db.chatConversation = require("../app/modules/chat/chat.conversation.model")(
+  db.sequelize,
+  DataTypes,
+);
+db.chatMessage = require("../app/modules/chat/chat.message.model")(
+  db.sequelize,
+  DataTypes,
+);
+
+// Chat associations
+db.chatConversation.hasMany(db.chatMessage, {
+  foreignKey: "conversationId",
+  as: "messages",
+});
+db.chatMessage.belongsTo(db.chatConversation, { foreignKey: "conversationId" });
+
+db.chatConversation.belongsTo(db.chatMessage, {
+  foreignKey: "lastMessageId",
+  as: "lastMessage",
+  constraints: false,
+});
+
+db.chatConversation.belongsTo(db.user, {
+  foreignKey: "userOneId",
+  as: "userOne",
+  constraints: false,
+});
+db.chatConversation.belongsTo(db.user, {
+  foreignKey: "userTwoId",
+  as: "userTwo",
+  constraints: false,
+});
+
+db.chatMessage.belongsTo(db.user, {
+  foreignKey: "senderUserId",
+  as: "sender",
+  constraints: false,
+});
+db.chatMessage.belongsTo(db.user, {
+  foreignKey: "receiverUserId",
+  as: "receiver",
+  constraints: false,
+});
+
+// ── Messaging (external: Facebook / WhatsApp) models ──
+db.externalConversation = require("../app/modules/messaging/externalConversation.model")(
+  db.sequelize,
+  DataTypes,
+);
+db.externalMessage = require("../app/modules/messaging/externalMessage.model")(
+  db.sequelize,
+  DataTypes,
+);
+db.externalConversation.hasMany(db.externalMessage, {
+  foreignKey: "conversationId",
+  as: "messages",
+});
+db.externalMessage.belongsTo(db.externalConversation, {
+  foreignKey: "conversationId",
+});
+
 // ✅ Sync the database
 db.sequelize
   .sync({ force: false }) // don't use `force: true` in production

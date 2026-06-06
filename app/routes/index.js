@@ -41,6 +41,8 @@ const NoticeRoutes = require("../modules/notice/notice.routes");
 const BranchRoutes = require("../modules/branch/branch.routes");
 const CountryRoutes = require("../modules/country/country.routes");
 const QuickLinkRoutes = require("../modules/quickLink/quickLink.routes");
+const ChatRoutes = require("../modules/chat/chat.routes");
+const MessagingRoutes = require("../modules/messaging/messaging.routes");
 
 const router = express.Router();
 
@@ -226,6 +228,14 @@ const moduleRoutes = [
   {
     path: "/notification",
     route: NotificationRoutes,
+  },
+  {
+    path: "/chat",
+    route: ChatRoutes,
+  },
+  {
+    path: "/messaging",
+    route: MessagingRoutes,
   },
 ];
 
