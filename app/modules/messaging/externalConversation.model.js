@@ -11,9 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       lastMessage: { type: DataTypes.TEXT, allowNull: true },
       lastMessageAt: { type: DataTypes.DATE, allowNull: true },
       unreadCount: { type: DataTypes.INTEGER, defaultValue: 0 },
+      deletedAt: { type: DataTypes.DATE, allowNull: true },
     },
     {
       indexes: [{ unique: true, fields: ["platform", "externalId"] }],
+      paranoid: true,
     },
   );
   return ExternalConversation;

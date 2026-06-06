@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,  // This field will store the tab value (e.g., "kc", "student")
           allowNull: false,
         },
-      });
+        deletedAt: { type: DataTypes.DATE, allowNull: true },
+      }, { paranoid: true });
       
 
   

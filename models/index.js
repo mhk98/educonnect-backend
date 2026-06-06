@@ -417,9 +417,16 @@ db.externalMessage.belongsTo(db.externalConversation, {
   foreignKey: "conversationId",
 });
 
-// ✅ Sync the database
+// Register remaining models
+db.previousPayment = require("../app/modules/previousPayment/previousPayment.model")(
+  db.sequelize,
+  DataTypes,
+);
+db.product = require("../app/modules/product/product.model")(db.sequelize);
+
+// ✅ Sync the database (alter: true adds new columns like deletedAt to existing tables)
 db.sequelize
-  .sync({ force: false }) // don't use `force: true` in production
+  .sync({ alter: true })
   .then(() => {
     console.log("Connection re-synced successfully");
   })

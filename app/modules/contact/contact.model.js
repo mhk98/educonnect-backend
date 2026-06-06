@@ -38,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING, // File path or filename
       allowNull: true,
     },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
 
   return Contact;
 };

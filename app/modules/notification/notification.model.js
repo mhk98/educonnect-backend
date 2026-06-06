@@ -23,10 +23,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
-      tableName: "notifications", // চাইলে custom নাম
-      timestamps: true, // createdAt & updatedAt আসবে
+      tableName: "notifications",
+      timestamps: true,
+      paranoid: true,
     },
   );
 

@@ -16,7 +16,12 @@ module.exports = (sequelize, DataTypes) => {
                 unique: true,
             },
 
-        }
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return ProgramUniversity;

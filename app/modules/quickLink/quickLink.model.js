@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 0,
     },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
 
   return QuickLink;
 };

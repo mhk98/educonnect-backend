@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     platformMessageId: { type: DataTypes.STRING, allowNull: true },
     repliedByName: { type: DataTypes.STRING, allowNull: true },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
   return ExternalMessage;
 };

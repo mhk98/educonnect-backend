@@ -20,9 +20,14 @@ module.exports = (sequelize, DataTypes) => {
             comment: {
                 type: DataTypes.STRING,
                 allowNull:true
-            },             
-                       
-        }
+            },
+
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return cashOut;

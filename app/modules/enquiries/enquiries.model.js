@@ -92,9 +92,13 @@ module.exports = (sequelize, DataTypes) => {
                   this.setDataValue("files", JSON.stringify(value));
                 },
               },
-                           
-                       
-        }
+
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return Enquiries;

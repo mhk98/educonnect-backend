@@ -17,7 +17,12 @@ module.exports = (sequelize, DataTypes) => {
 
             },
 
-        }
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return ProgramYear;

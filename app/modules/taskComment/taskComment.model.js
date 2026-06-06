@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
 
   return TaskComment;
 };

@@ -19,7 +19,12 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull:true,
             },
 
-        }
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return Notice;

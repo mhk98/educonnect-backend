@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSON,
       allowNull: true,
     },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
 
   return TaskActivity;
 };

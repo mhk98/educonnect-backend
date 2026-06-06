@@ -86,8 +86,13 @@ module.exports = (sequelize, DataTypes, Sequelize) => {
         allowNull: true,
         defaultValue: "student",
       },
+      deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
+      paranoid: true,
       hooks: {
         // ✅ Assign custom ID before validation
         beforeValidate: async (user, options) => {

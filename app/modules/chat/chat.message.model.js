@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     isRead: { type: DataTypes.BOOLEAN, defaultValue: false },
     readAt: { type: DataTypes.DATE, allowNull: true },
-  });
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
   return ChatMessage;
 };

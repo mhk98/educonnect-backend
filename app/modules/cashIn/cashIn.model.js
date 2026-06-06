@@ -24,9 +24,14 @@ module.exports = (sequelize, DataTypes) => {
             status: {
                 type: DataTypes.STRING,
                 allowNull:true
-            },             
-                       
-        }
+            },
+
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return CashIn;

@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-    });
+      deletedAt: { type: DataTypes.DATE, allowNull: true },
+    }, { paranoid: true });
   
     return KCReply;
   };

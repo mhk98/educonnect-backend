@@ -26,8 +26,13 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull:true,
                 defaultValue: "PENDING",
 
-            },             
-        }
+            },
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+        },
+        { paranoid: true }
     )
 
     return RequestPayment;

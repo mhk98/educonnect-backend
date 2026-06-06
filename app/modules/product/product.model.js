@@ -293,8 +293,9 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL(16, 2),
       allowNull: false,
     },
-   
-  });
+
+    deletedAt: { type: DataTypes.DATE, allowNull: true },
+  }, { paranoid: true });
 
   return Product;
 };

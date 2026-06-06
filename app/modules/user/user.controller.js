@@ -6,6 +6,7 @@ const { UserFilterAbleFileds } = require("./user.constants");
 const UserService = require("./user.service");
 // const { UserService } = require("./user.service");
 const bcrypt = require("bcryptjs");
+const sendEmail = require("../../middlewares/emailSender");
 
 const login = catchAsync(async (req, res) => {
   console.log(req.body);
@@ -72,6 +73,69 @@ const register = catchAsync(async (req, res) => {
   }
 
   const result = await UserService.register(data);
+
+  // Send login credentials email to the newly created user
+  if (Email) {
+    const appUrl = process.env.APP_URL || "https://app.eaconsultancy.org";
+    const roleLabel =
+      cleanRole === "employee" ? "Employee" :
+      cleanRole === "admin"    ? "Admin"    : "Student";
+
+    sendEmail({
+      to: Email,
+      subject: `Welcome to EduConnect — Your ${roleLabel} Account`,
+      htmlContent: `
+        <div style="font-family:Arial,sans-serif;max-width:540px;margin:0 auto;background:#f9fafb;border-radius:14px;overflow:hidden;">
+          <!-- Header -->
+          <div style="background:linear-gradient(135deg,#1B2E6B 0%,#2563EB 100%);padding:32px 28px;text-align:center;">
+            <h1 style="color:#fff;font-size:22px;margin:0;letter-spacing:0.3px;">Welcome to EduConnect!</h1>
+            <p style="color:rgba(255,255,255,0.8);font-size:13px;margin:8px 0 0;">Your account has been created successfully</p>
+          </div>
+          <!-- Body -->
+          <div style="padding:32px 28px;">
+            <p style="color:#374151;font-size:15px;margin:0 0 8px;">Hi <strong>${FirstName} ${LastName}</strong>,</p>
+            <p style="color:#6b7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+              Your <strong>${roleLabel}</strong> account on the EduConnect portal is ready.
+              Use the credentials below to log in.
+            </p>
+
+            <!-- Credentials box -->
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:22px 24px;margin-bottom:24px;">
+              <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <tr>
+                  <td style="color:#9ca3af;padding:8px 0;width:38%;vertical-align:top;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Login Link</td>
+                  <td style="padding:8px 0;">
+                    <a href="${appUrl}" style="color:#2563EB;font-weight:600;text-decoration:none;">${appUrl}</a>
+                  </td>
+                </tr>
+                <tr style="border-top:1px solid #f3f4f6;">
+                  <td style="color:#9ca3af;padding:8px 0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Email</td>
+                  <td style="color:#111827;font-weight:600;padding:8px 0;">${Email}</td>
+                </tr>
+                <tr style="border-top:1px solid #f3f4f6;">
+                  <td style="color:#9ca3af;padding:8px 0;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">Password</td>
+                  <td style="padding:8px 0;">
+                    <span style="background:#EFF6FF;color:#1B2E6B;font-weight:700;font-size:18px;letter-spacing:4px;padding:4px 12px;border-radius:6px;font-family:monospace;">${Password}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Warning -->
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin-bottom:24px;">
+              <p style="color:#dc2626;font-size:13px;margin:0;">
+                ⚠️ For security, please change your password immediately after first login.
+              </p>
+            </div>
+
+            <p style="color:#9ca3af;font-size:12px;text-align:center;margin:0;padding-top:16px;border-top:1px solid #f3f4f6;">
+              EduConnect &mdash; EA Consultancy &nbsp;|&nbsp; Study Abroad
+            </p>
+          </div>
+        </div>
+      `,
+    }).catch((err) => console.error("Credentials email failed:", err));
+  }
 
   sendResponse(res, {
     statusCode: 200,
