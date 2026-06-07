@@ -36,8 +36,13 @@ const waWebhookVerify = (req, res) => {
 };
 
 const waWebhookReceive = catchAsync(async (req, res) => {
-  if (req.body.object === "whatsapp_business_account") {
-    await MessagingService.handleWhatsAppWebhook(req.body);
+  const body = req.body;
+  console.log("[WA Webhook] Received:", JSON.stringify(body, null, 2));
+
+  if (body.object === "whatsapp_business_account") {
+    await MessagingService.handleWhatsAppWebhook(body);
+  } else {
+    console.log("[WA Webhook] Ignored — object is:", body.object);
   }
   res.sendStatus(200);
 });

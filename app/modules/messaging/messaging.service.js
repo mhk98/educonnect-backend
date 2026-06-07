@@ -102,13 +102,23 @@ const handleFacebookWebhook = async (body) => {
 
 /* ─── WhatsApp webhook handler ─── */
 const handleWhatsAppWebhook = async (body) => {
-  const changes = body?.entry?.[0]?.changes || [];
+  const entries = body?.entry || [];
+  const changes = entries.flatMap((e) => e.changes || []);
+
+  console.log("[WA] entries:", entries.length, "changes:", changes.length);
+
   for (const change of changes) {
     const messages = change.value?.messages || [];
     const contacts = change.value?.contacts || [];
 
+    console.log("[WA] messages in change:", messages.length);
+
     for (const msg of messages) {
-      if (msg.type !== "text") continue;
+      console.log("[WA] msg type:", msg.type, "from:", msg.from);
+      if (msg.type !== "text") {
+        console.log("[WA] Skipping non-text message type:", msg.type);
+        continue;
+      }
       const phone = msg.from;
       const messageText = msg.text?.body;
       if (!phone || !messageText) continue;
