@@ -29,6 +29,10 @@ db.notification = require("../app/modules/notification/notification.model")(
   db.sequelize,
   DataTypes,
 );
+db.logHistory = require("../app/modules/logHistory/logHistory.model")(
+  db.sequelize,
+  DataTypes,
+);
 db.tests = require("../app/modules/tests/tests.model")(db.sequelize, DataTypes);
 db.document = require("../app/modules/document/document.model")(
   db.sequelize,
@@ -424,9 +428,10 @@ db.previousPayment = require("../app/modules/previousPayment/previousPayment.mod
 );
 db.product = require("../app/modules/product/product.model")(db.sequelize);
 
-// ✅ Sync the database (alter: true adds new columns like deletedAt to existing tables)
+// ✅ Sync creates missing tables. Keep alter opt-in; repeated alter can create
+// duplicate MySQL indexes and hit the 64-key limit on existing tables.
 db.sequelize
-  .sync({ alter: true })
+  .sync({ alter: process.env.DB_SYNC_ALTER === "true" })
   .then(() => {
     console.log("Connection re-synced successfully");
   })

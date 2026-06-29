@@ -38,6 +38,7 @@ const LeadDocumentRoutes = require("../modules/leadDocument/leadDocument.routes"
 const PixelRoutes = require("../modules/pixel/pixel.routes");
 const NotificationRoutes = require("../modules/notification/notification.routes");
 const NoticeRoutes = require("../modules/notice/notice.routes");
+const LogHistoryRoutes = require("../modules/logHistory/logHistory.routes");
 const BranchRoutes = require("../modules/branch/branch.routes");
 const CountryRoutes = require("../modules/country/country.routes");
 const QuickLinkRoutes = require("../modules/quickLink/quickLink.routes");
@@ -228,6 +229,10 @@ const moduleRoutes = [
   {
     path: "/notification",
     route: NotificationRoutes,
+  },
+  {
+    path: "/logHistory",
+    route: LogHistoryRoutes,
   },
   {
     path: "/chat",

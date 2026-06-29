@@ -1,19 +1,9 @@
 const catchAsync = require("../../../shared/catchAsync");
-const db = require("../../../models");
 const sendResponse = require("../../../shared/sendResponse");
-const TaskActivityService = require("./taskActivity.service");
+const db = require("../../../models");
+const LogHistoryService = require("./logHistory.service");
 
-const getTaskActivity = catchAsync(async (req, res) => {
-  const result = await TaskActivityService.getActivityByTask(req.params.taskId);
-
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    data: result,
-  });
-});
-
-const getAllTaskActivity = catchAsync(async (req, res) => {
+const getAllFromDB = catchAsync(async (req, res) => {
   const user = await db.user.findByPk(req.user?.id, {
     attributes: ["id", "Role", "Branch"],
   });
@@ -26,16 +16,19 @@ const getAllTaskActivity = catchAsync(async (req, res) => {
   }
 
   const branch = user.Role === "admin" ? user.Branch : req.query.branch;
-  const result = await TaskActivityService.getAllActivity({ branch });
+  const result = await LogHistoryService.getAllFromDB({ branch });
+  const branches = await LogHistoryService.getBranchOptions({
+    branch: user.Role === "admin" ? user.Branch : undefined,
+  });
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     data: result,
+    meta: { branches },
   });
 });
 
 module.exports = {
-  getTaskActivity,
-  getAllTaskActivity,
+  getAllFromDB,
 };

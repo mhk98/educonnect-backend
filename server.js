@@ -172,6 +172,7 @@ const db = require("./models"); // Sequelize instance
 const routes = require("./app/routes");
 const ApiError = require("./error/ApiError");
 const { initSocket } = require("./app/modules/realtime/socket");
+const auditLogger = require("./app/middlewares/auditLogger");
 
 const app = express();
 const server = http.createServer(app);
@@ -209,6 +210,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(auditLogger);
 
 /* ========================
    STATIC FILES

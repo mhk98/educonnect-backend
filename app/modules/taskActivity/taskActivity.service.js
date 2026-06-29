@@ -33,7 +33,31 @@ const getActivityByTask = async (task_id) => {
   });
 };
 
+const getAllActivity = async ({ branch } = {}) => {
+  const taskInclude = {
+    model: db.task,
+    attributes: ["id", "task", "status", "priority", "branch"],
+  };
+
+  if (branch) {
+    taskInclude.where = { branch };
+    taskInclude.required = true;
+  }
+
+  return await TaskActivity.findAll({
+    include: [
+      {
+        model: db.user,
+        attributes: ["id", "FirstName", "LastName", "image", "Role", "Branch"],
+      },
+      taskInclude,
+    ],
+    order: [["createdAt", "DESC"]],
+  });
+};
+
 module.exports = {
   logActivity,
   getActivityByTask,
+  getAllActivity,
 };
